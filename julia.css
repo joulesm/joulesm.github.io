@@ -1,0 +1,223 @@
+body {
+	font-family: 'Roboto', sans-serif;
+}
+
+p {
+	line-height: 1.3em;
+	margin-bottom: 0;
+}
+
+a:link,
+a:visited {
+	color: maroon;
+}
+
+.header {
+	font-size: 3em;
+	margin-left: 90px;
+	margin-top: 20px;
+	position: relative;
+}
+
+.header a {
+	color: black;
+	text-decoration: none;
+}
+
+.content {
+	padding: 20px 90px;
+	width: 85%;
+}
+
+.menu {
+	display: inline-block;
+	padding-right: 20px;
+	/* position: fixed; */
+	vertical-align: top;
+}
+
+.menu-item {
+	color: grey;
+}
+
+.projects {
+	display: inline-block;
+	margin-left: 20px;
+	width: 80%;
+}
+
+.page-title {
+	color: maroon;
+	font-size: 2em;
+	font-weight: 700;
+	text-align: right;
+}
+
+.hide {
+	display: none;
+}
+
+.g-section {
+	border-top: 1px solid;
+	margin-top: 20px;
+}
+
+.project {
+	align-items: flex-start;
+	border-top: 1px solid;
+	display: flex;
+	flex-direction: row;
+	margin-top: 20px;
+	padding-top: 20px;
+}
+
+.p-image {
+	width: 300px;
+}
+
+.left .p-image,
+.left .p-image-link,
+.left .p-multi-images,
+.left .p-youtube-video {
+  order: 2;
+}
+
+.left .p-image,
+.left .p-multi-images,
+.left .p-youtube-video {
+	margin-left: 20px;
+}
+
+.right .p-image,
+.right .p-image-link,
+.right .p-multi-images,
+.right .p-youtube-video {
+	order: 1;
+}
+
+.right .p-image,
+.right .p-multi-images,
+.right .p-youtube-video {
+	margin-right: 20px;
+}
+
+.p-multi-images .p-image {
+	width: 200px;
+}
+
+.p-multi-images .p-image,
+.p-multi-images a:first-child .p-image {
+	margin-bottom: 10px;
+}
+
+.p-youtube-video {
+	height: 300px;
+}
+
+#pybay .p-youtube-video {
+	height: auto;
+}
+
+.p-title {
+	color: grey;
+	font-size: 1.6em;
+	font-weight: 500;
+}
+
+.right .p-title {
+	text-align: right;
+}
+
+.p-desc {
+	
+}
+
+.left .p-desc {
+	order: 1;
+}
+
+.right .p-desc {
+	order: 2;
+}
+
+.p-text {
+	text-align: justify;
+}
+
+.p-more {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.p-more.right {
+	text-align: right;
+}
+
+.p-hidden {
+	background-color: #eeeeee;
+	display: none;
+	padding-bottom: 20px;
+	text-align: center;
+}
+
+.p-hidden-video {
+	display: none;
+}
+
+.right.p-hidden-video {
+	text-align: right;
+}
+
+.p-video {
+	display: block;
+	margin-top: 20px;
+}
+
+.p-media-and-caption,
+.g-media-and-caption {
+	display: inline-block;
+	max-width: 33%;
+	vertical-align: top;
+}
+
+.g-media-and-caption {
+	margin-bottom: 10px;
+}
+
+.p-media,
+.g-media {
+	display: inline-block;
+	margin: 20px;
+}
+
+.g-media {
+	margin-bottom: 10px;
+	width: 230px;
+}
+
+.p-media img {
+	height: 170px;
+	width: 200px;
+}
+
+.p-caption,
+.g-caption {
+	font-size: 12px;
+	line-height: normal;
+	margin: 0;
+}
+
+.g-caption {
+	padding-left: 20px;
+	padding-right: 20px;
+	text-align: center;
+}
+
+#interest-networks .p-media-and-caption {
+	max-width: none;
+}
+
+#interest-networks .p-media img {
+	height: 284px;
+	width: 624px;
+}

@@ -1,0 +1,398 @@
+<html>
+<head>
+	<title>Bits</title>
+	<link href="julia.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="scripts.js"></script>
+</head>
+
+<body>
+	<div class="header"><a href="http://julia.ma">Julia Ma</a></div>
+
+	<div class="content">
+		<div class="menu">
+			<div class="menu-item"><a href="highlights.html">Highlights</a></div>
+			<div class="menu-item"><a href="bytes.html">Bytes</a></div>
+			<div class="menu-item">Bits</div>
+			<div class="menu-item"><a href="glass.html">Glass</a></div>
+			<div class="menu-item"><a href="art.html">Art</a></div>
+			<div class="menu-item"><a href="index.html">About</a></div>
+		</div>
+
+		<div class="projects">
+
+			<div class="page-title">Bits</div>
+
+			<div id="tipr" class="project-container hide">
+				<div class="project right">
+					<img class="p-image" src="images/blank.png">
+					<div class="p-desc">
+						<div class="p-title">TipR</div>
+						<div class="p-text">
+							<p>TipR</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="machine-visionary" class="project-container">
+				<div class="project left">
+					<img class="p-image" src="images/machine-visionary.png">
+					<div class="p-desc">
+						<div class="p-title">Machine Visionary</div>
+						<div class="p-text">
+							<p>My sister, Elisha, wanted to learn how to use machine-vision APIs, and my husband, <a href="http://www.eyalshahar.com">Eyal</a>, loves puns. So we thought, why not make machines *have* vision? What would a machine imagine for the future?</p>
+							<p>We hacked together a <a href="http://thymetravels.no-ip.biz/machine-visionary/">demo</a> where, given an image URL, the machine returns a motivational-poster-like image with a quote. The machine vision algorithm is applied to the image to extract descriptor words. The machine then harvests Wikiquotes from famous "visionaries" and replaces the words with corresponding parts-of-speech words that were extracted.</p>
+							<p>This was for SF Science Hack Day 2016. <a href="https://github.com/joulesm/machine-visionary">Source code</a>.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="saganized-search" class="project-container">
+				<div class="project right">
+					<img class="p-image" src="images/saganized-search.png">
+					<div class="p-desc">
+						<div class="p-title">Saganized Search</div>
+						<div class="p-text">
+							<p>For SF Science Hack Day 2014, <a href="http://www.eyalshahar.com">Eyal</a> and I remixed Google search with Carl Sagan. Your search term is matched with a quote from the transcript of "Cosmos". We also add a random scientific term to your query, giving you billions and billions of results. Check out the <a href="https://github.com/joulesm/Saganize">source code</a> and the <a href="http://thymetravels.no-ip.biz/saganize/search">demo</a> (a bit buggy as it's a hack...just add your query to the <a href="http://thymetravels.no-ip.biz/saganize/search/bananas">URL</a>).</p>
+							<p>This hack used Python w/ Flask and NLTK on <a href="http://www.springfieldspringfield.co.uk/episode_scripts.php?tv-show=cosmos-carl-sagan">Cosmos transcripts</a>.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="friendly-earthquakes" class="project-container">
+				<div class="project left">
+					<img class="p-image" src="images/friendly-earthquakes.png">
+					<div class="p-desc">
+						<div class="p-title">Friendly Earthquakes</div>
+						<div class="p-text">
+							<p>For SF Science Hack Day 2013, <a href="http://www.eyalshahar.com">Eyal Shahar</a>, <a href="https://twitter.com/automin">Paul Sawaya</a>, and I created Friendly Earthquakes. We used Facebook's Friend API and USGS's live earthquake feed to match recent earthquake locations to your Facebook friends that are near these earthquakes. This provides a notification system for you about friends that might be at risk.</p>
+							<p>Sound familiar?? Well Facebook launched Safety Check in 2014, which does a better job of this idea :P</p>
+							<p>Tools we used: USGS earthquake API, Facebook Friend API, Flask, MongoDB, Github. The source code lives <a href="https://github.com/joulesm/friendly-earthquakes/">here</a>.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="songalogue" class="project-container">
+				<div class="project right">
+					<img class="p-image" src="images/songalogue.jpg">
+					<div class="p-desc">
+						<div class="p-title">Songalogue</div>
+						<div class="p-text">
+							<p>For Boston Music Hack Day 2011, <a href="http://www.eyalshahar.com">Eyal</a> and I used the Musixmatch API to pull lyrics from songs, creating a song-dialogue. The user would seed the Songalogue and receive two songs that would essentially talk to each other. We wanted all the Songalogues to be Youtube videos, but the hack didn't get that far. The picture is from our hack presentation.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="weatherbud" class="project-container">
+				<div class="project left">
+					<img class="p-image" src="images/weatherbud.png">
+					<div class="p-desc">
+						<div class="p-title">Weatherbud</div>
+						<div class="p-text">
+							<p>Weatherbud was built in collaboration with <a href="http://www.eyalshahar.com">Eyal Shahar</a> at the MIT Media Lab IOIO hackathon. It displays the weather in a tactile, informative, and fun way. Built around an Android phone and a IOIO board, it polls wunderground.com's API for the weather conditions in a location selected through the app.</p>
+							<p>The information is conveyed through a fabric flower lit by an RGB LED, whose color is determined by the temperature. A fan blowing air on the flower shows the wind speed. Finally, the platform on which the flower is placed rotates in accordance with the direction of the wind.</p>
+						</div>
+					</div>
+				</div>
+				<p class="p-more left">Video</p>
+				<div class="p-hidden-video">
+				<iframe src="https://player.vimeo.com/video/48650361" width="480" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+				</div>
+			</div>
+
+			<div id="tangible-visualization" class="project-container">
+				<div class="project right">
+					<img class="p-image" src="images/t-v.png">
+					<div class="p-desc">
+						<div class="p-title">T+V</div>
+						<div class="p-text">
+							<p>Time lapse of an installation that uses crowd-sourcing to actively build a tangible visualization of attendee demographics. A world map covered by transparent LEGO baseplates stands at a conference, and bowls of colored transparent LEGO bricks sit nearby. Each person places a green brick on where they grew up, a red brick on where they currently live, and a blue brick on where they dream to live someday. This creates a 3-dimensional visualization. A light shines through the back-side, allowing the viewer to immediately see where the hot-spots are as those areas are more dense with bricks.</p>
+							<p><a href="http://tv.media.mit.edu">tv.media.mit.edu</a></p>
+						</div>
+					</div>
+				</div>
+				<p class="p-more right">Video</p>
+				<div class="p-hidden-video right">
+					<iframe src="https://player.vimeo.com/video/30525001" width="492" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+					<p>My collaborator <a href="http://bardagjy.com/">Andy Bardagjy</a> also describes this project on his <a href="http://bardagjy.com/?p=685">website</a>.</p>
+				</div>
+			</div>
+
+			<div id="subdivision" class="project-container">
+				<div class="project left">
+					<img class="p-image" src="images/subdivision.png">
+					<div class="p-desc">
+						<div class="p-title">Subdivision of Surfaces</div>
+						<div class="p-text">
+							<p>One of the challenges in 3D modeling is creating aesthetically appealing surfaces using a systematic method. Subdivision of surfaces is a popular way to create smooth-looking surfaces from a mesh surface. Subdivision is a recursive process that takes a coarse shape and refines it to produce a more detailed and visually attractive shape. Many subdivision methods exist, so I developed an algorithm to blend various methods together in an attempt to give greater control to the user.</p>
+						</div>
+					</div>
+				</div>
+				<p class="p-more left">More images</p>
+				<div class="p-hidden">
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/subdivision1.png"><img src="images/subdivision1.png"></a>
+						<p class="p-caption">Subdividing a cube using the Catmull-Clark method.</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/subdivision2.png"><img src="images/subdivision2.png"></a>
+						<p class="p-caption">Subdividing a cube using linear division.</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/subdivision3.png"><img src="images/subdivision3.png"></a>
+						<p class="p-caption">Subdivision using a blend of these methods.</p>
+					</div>
+				</div>
+			</div>
+
+			<div id="synaesthetic-music-visualizer" class="project-container">
+				<div class="project right">
+					<img class="p-image" src="images/music-visualizer.png">
+					<div class="p-desc">
+						<div class="p-title">Synaesthetic music visualizer</div>
+						<div class="p-text">
+							<p>The synaesthetic music visualizer maps each note, regardless of octave, to a specific color. Thus if you were to play a scale, the colors would cycle every octave in the same order. By using tri-color LEDs, I was able to create a whole spectrum of colors with just one component.</p>
+						</div>
+					</div>
+				</div>
+				<p class="p-more right">More images</p>
+				<div class="p-hidden">
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/music-visualizer1.jpg"><img src="images/music-visualizer1.png"></a>
+						<p class="p-caption">Fully packaged</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/music-visualizer2.jpg"><img src="images/music-visualizer2.png"></a>
+						<p class="p-caption">Circuitry</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/music-visualizer3.jpg"><img src="images/music-visualizer3.png"></a>
+						<p class="p-caption">Circuitry</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/music-visualizer4.jpg"><img src="images/music-visualizer4.png"></a>
+						<p class="p-caption">Schematic of the filters</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/music-visualizer5.jpg"><img src="images/music-visualizer5.png"></a>
+						<p class="p-caption">Schematic of the LEDs</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/music-visualizer6.jpg"><img src="images/music-visualizer6.png"></a>
+						<p class="p-caption">Board layout</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/music-visualizer7.jpg"><img src="images/music-visualizer7.png"></a>
+						<p class="p-caption">Block diagram</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/music-visualizer8.jpg"><img src="images/music-visualizer8.png"></a>
+						<p class="p-caption">Prototype of 2 of the filters</p>
+					</div>
+				</div>
+			</div>
+
+			<div id="electronic-bubble-level" class="project-container">
+				<div class="project left">
+					<img class="p-image" src="images/bubble-level.png">
+					<div class="p-desc">
+						<div class="p-title">Electronic bubble level</div>
+						<div class="p-text">
+							<p>The electronic bubble level works just like a non-digital bubble level. The light indicates the incline of the surface.</p>
+						</div>
+					</div>
+				</div>
+				<p class="p-more left">More images</p>
+				<div class="p-hidden">
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/bubble-level1.jpg"><img src="images/bubble-level1.png"></a>
+						<p class="p-caption">Circuitry</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/bubble-level2.jpg"><img src="images/bubble-level2.png"></a>
+						<p class="p-caption">Schematic</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/bubble-level3.jpg"><img src="images/bubble-level3.png"></a>
+						<p class="p-caption">Board layout</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/bubble-level4.jpg"><img src="images/bubble-level4.png"></a>
+						<p class="p-caption">Green LED lights up when flat</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/bubble-level5.jpg"><img src="images/bubble-level5.png"></a>
+						<p class="p-caption">Yellow LED lights up when slightly tilted</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/bubble-level6.jpg"><img src="images/bubble-level6.png"></a>
+						<p class="p-caption">Red LED lights up when fully tilted</p>
+					</div>
+				</div>
+			</div>
+
+			<div id="radio-transceiver" class="project-container">
+				<div class="project right">
+					<img class="p-image" src="images/radio-transceiver.png">
+					<div class="p-desc">
+						<div class="p-title">Radio transceiver</div>
+						<div class="p-text">
+							<p>This superheterodyne transceiver functions in the ham radio frequency ranges. When an antenna and speaker are plugged in, you can hear the Morse code transmitted by amateur radio operators from all around the country. The Radio Frequency (RF) gain knob acts as an attenuator at the input to keep the radio from overloading. The Receiver-Incremental Tuning (RIT) knob allows you to offset the receive frequency from the transmit frequency. The Variable Frequency Oscillator (VFO) knob tunes the radio.</p>
+							<p>The block diagrams and schematics can be found in "The Electronics of Radio" by David Rutledge.</p>
+						</div>
+					</div>
+				</div>
+				<p class="p-more right">More images</p>
+				<div class="p-hidden">
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/radio-transceiver1.jpg"><img src="images/radio-transceiver1.png"></a>
+						<p class="p-caption">Radio transceiver with speaker</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/radio-transceiver2.jpg"><img src="images/radio-transceiver2.png"></a>
+						<p class="p-caption">Circuitry</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/radio-transceiver3.jpg"><img src="images/radio-transceiver3.png"></a>
+						<p class="p-caption">Top view</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/radio-transceiver4.jpg"><img src="images/radio-transceiver4.png"></a>
+						<p class="p-caption">Front view</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/radio-transceiver5.jpg"><img src="images/radio-transceiver5.png"></a>
+						<p class="p-caption">Back view</p>
+					</div>
+				</div>
+			</div>
+
+			<div id="infrared-transmitter-receiver" class="project-container">
+				<div class="project left">
+					<img class="p-image" src="images/ir-transceiver.png">
+					<div class="p-desc">
+						<div class="p-title">Infrared transmitter/receiver</div>
+						<div class="p-text">
+							<p>The infrared transmitter/receiver pair is designed to allow signals (sound waves) to travel across a distance without wires. Using this device, you can wirelessly listen to music being played up to 10 feet away.</p>
+						</div>
+					</div>
+				</div>
+				<p class="p-more left">More images</p>
+				<div class="p-hidden">
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/ir-transceiver1.jpg"><img src="images/ir-transceiver1.png"></a>
+						<p class="p-caption">Transmitter (left) and receiver</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/ir-transceiver2.jpg"><img src="images/ir-transceiver2.png"></a>
+						<p class="p-caption">Receiver circuitry</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/ir-transceiver3.jpg"><img src="images/ir-transceiver3.png"></a>
+						<p class="p-caption">Receiver packaging</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/ir-transceiver4.jpg"><img src="images/ir-transceiver4.png"></a>
+						<p class="p-caption">Transmitter circuitry</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/ir-transceiver5.jpg"><img src="images/ir-transceiver5.png"></a>
+						<p class="p-caption">Transmitter packaging</p>
+					</div>
+				</div>
+			</div>
+
+			<div id="mp3-jukebox" class="project-container">
+				<div class="project right">
+					<img class="p-image" src="images/mp3-jukebox.png">
+					<div class="p-desc">
+						<div class="p-title">MP3 Jukebox</div>
+						<div class="p-text">
+							<p>The MP3 Jukebox is a microprocessor-based system that is capable of playing MP3 files stored on an IDE hard drive. A ROM chip is now in the 	place of where the debugger used to be. The keypad is used to control the player and can play/pause/fast-forward/rewind the player. The system state and song names are shown on the display.</p>
+							<p>The underside of the board shows all the connections I created by wirewrapping the pins, color-coded for clarity. I love the way this looks.</p>
+							<p>The debugger plugged into the serial port on the target board. It was used to control and program the MP3 player while it was being built.</p>
+						</div>
+					</div>
+				</div>
+				<p class="p-more right">More images</p>
+				<div class="p-hidden">
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/mp3-jukebox1.jpg"><img src="images/mp3-jukebox1.png"></a>
+						<p class="p-caption">Circuitry, top view</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/mp3-jukebox2.jpg"><img src="images/mp3-jukebox2.png"></a>
+						<p class="p-caption">Circuitry, bottom view</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/mp3-jukebox3.jpg"><img src="images/mp3-jukebox3.png"></a>
+						<p class="p-caption">Debugger</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/mp3-jukebox4.jpg"><img src="images/mp3-jukebox4.png"></a>
+						<p class="p-caption">Block diagram</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/mp3-jukebox5.jpg"><img src="images/mp3-jukebox5.png"></a>
+						<p class="p-caption">Board layout</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/mp3-jukebox6.jpg"><img src="images/mp3-jukebox6.png"></a>
+						<p class="p-caption">Schematic</p>
+					</div>
+				</div>
+
+			</div>
+
+			<div id="robocrane" class="project-container">
+				<div class="project left">
+					<img class="p-image" src="images/robocrane.png">
+					<div class="p-desc">
+						<div class="p-title">RoboCrane</div>
+						<p>This RoboCrane project for EE/CS51 at Caltech taught me about microprocessors. The system allowed an operator to program a robotic crane via a keypad and display or a serial device.</p>
+					</div>
+				</div>
+				<p class="p-more left">More images</p>
+				<div class="p-hidden">
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/robocrane1.jpg"><img src="images/robocrane1.png"></a>
+						<p class="p-caption">Robocrane circuitry</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/robocrane2.jpg"><img src="images/robocrane2.png"></a>
+						<p class="p-caption">Block diagram</p>
+					</div>
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/robocrane3.jpg"><img src="images/robocrane3.png"></a>
+						<p class="p-caption">Schematic</p>
+					</div>
+				</div>
+			</div>
+
+			<div id="continuity-tester" class="project-container">
+				<div class="project right">
+					<img class="p-image" src="images/continuity-tester1.jpg">
+					<div class="p-desc">
+						<div class="p-title">Continuity tester</div>
+						<p>The continuity tester was the first circuit I built. It would emit a noise if the circuit connection was solid. I've used this in almost every circuit class and even external projects.</p>
+					</div>
+				</div>
+				<p class="p-more right">More images</p>
+				<div class="p-hidden">
+					<div class="p-media-and-caption">
+						<a class="p-media" href="images/continuity-tester2.jpg"><img src="images/continuity-tester2.jpg"></a>
+						<p class="p-caption">Schematic</p>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</body>
+</html>
