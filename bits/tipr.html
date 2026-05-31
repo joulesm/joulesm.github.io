@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TipR</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #1a1a1a;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 0.4rem;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .input-wrap {
+      position: relative;
+      flex: 1;
+    }
+
+    .input-wrap span {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.65rem 0.75rem 0.65rem 1.75rem;
+      font-size: 1rem;
+      border: 1.5px solid #ddd;
+      border-radius: 0.5rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #555;
+    }
+
+    input[type="text"].error {
+      border-color: #d94f4f;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #d94f4f;
+      margin-top: 0.4rem;
+      min-height: 1.1em;
+    }
+
+    button {
+      padding: 0.65rem 1.25rem;
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+      align-self: flex-start;
+      margin-top: 1px;
+    }
+
+    button:hover { background: #333; }
+    button:active { background: #000; }
+
+    .results {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .result-card {
+      border: 1.5px solid #e8e8e8;
+      border-radius: 0.65rem;
+      padding: 0.9rem 1rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .result-label {
+      font-size: 0.75rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      grid-column: 1 / -1;
+      margin-bottom: 0.2rem;
+    }
+
+    .result-total {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .result-pct {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #555;
+      text-align: right;
+    }
+
+    .result-tip {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>TipR</h1>
+
+    <label for="cost">Order total</label>
+    <div class="input-row">
+      <div class="input-wrap">
+        <span>$</span>
+        <input type="text" id="cost" inputmode="decimal" placeholder="0.00" autocomplete="off" />
+      </div>
+      <button id="calc">Calculate</button>
+    </div>
+    <div class="hint" id="hint"></div>
+
+    <div class="results hidden" id="results"></div>
+  </div>
+
+  <script>
+    const input = document.getElementById('cost');
+    const hint = document.getElementById('hint');
+    const resultsEl = document.getElementById('results');
+
+    function validate(raw) {
+      const trimmed = raw.trim();
+      if (!trimmed) return { ok: false, msg: 'Please enter an amount.' };
+      if (!/^\d+(\.\d{1,2})?$/.test(trimmed)) {
+        return { ok: false, msg: 'Enter a numeric value with up to 2 decimal places (e.g. 24.75).' };
+      }
+      const val = parseFloat(trimmed);
+      if (val <= 0) return { ok: false, msg: 'Amount must be greater than $0.' };
+      return { ok: true, val };
+    }
+
+    function computeOptions(cost) {
+      const step = cost < 25 ? 0.5 : 1.0;
+      const totalMin = cost * 1.18;
+      const totalMax = cost * 1.22;
+
+      // Find smallest candidate >= totalMin aligned to step
+      const startN = Math.ceil(totalMin / step);
+      const endN   = Math.floor(totalMax / step);
+
+      const candidates = [];
+      for (let n = startN; n <= endN; n++) {
+        const total = Math.round(n * step * 100) / 100;
+        const tip   = Math.round((total - cost) * 100) / 100;
+        const pct   = (tip / cost) * 100;
+        candidates.push({ total, tip, pct });
+      }
+
+      if (candidates.length === 0) return [];
+      if (candidates.length <= 3) return candidates;
+
+      const lo  = candidates[0];
+      const hi  = candidates[candidates.length - 1];
+      const mid = candidates[Math.floor((candidates.length - 1) / 2)];
+      return [lo, mid, hi];
+    }
+
+    function fmt(n, decimals = 2) {
+      return n.toFixed(decimals);
+    }
+
+    function labels(count) {
+      if (count === 1) return [''];
+      if (count === 2) return ['Lower', 'Higher'];
+      return ['Lower', 'Middle', 'Higher'];
+    }
+
+    function render(options, cost) {
+      const lbls = labels(options.length);
+      resultsEl.innerHTML = options.map((o, i) => `
+        <div class="result-card">
+          <div class="result-label">${lbls[i]}</div>
+          <div class="result-total">$${fmt(o.total)}</div>
+          <div class="result-pct">${fmt(o.pct, 1)}%</div>
+          <div class="result-tip">$${fmt(o.tip)} tip</div>
+        </div>
+      `).join('');
+      resultsEl.classList.remove('hidden');
+    }
+
+    function calculate() {
+      const { ok, msg, val } = validate(input.value);
+      if (!ok) {
+        hint.textContent = msg;
+        input.classList.add('error');
+        resultsEl.classList.add('hidden');
+        return;
+      }
+
+      hint.textContent = '';
+      input.classList.remove('error');
+
+      const options = computeOptions(val);
+      if (options.length === 0) {
+        hint.textContent = 'No whole-dollar totals fall in the 18–22% tip range for this amount.';
+        resultsEl.classList.add('hidden');
+        return;
+      }
+
+      render(options, val);
+    }
+
+    document.getElementById('calc').addEventListener('click', calculate);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+  </script>
+</body>
+</html>
