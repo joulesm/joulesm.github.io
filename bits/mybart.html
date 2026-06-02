@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BART: Embarcadero → El Cerrito Plaza</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #1a1a1a;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    }
+
+    .header {
+      margin-bottom: 1.75rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #777;
+    }
+
+    .route-card {
+      border: 1.5px solid #e8e8e8;
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      position: relative;
+      transition: border-color 0.15s;
+    }
+
+    .route-card.best {
+      border-color: #2563eb;
+      background: #f0f5ff;
+    }
+
+    .best-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: #2563eb;
+      color: #fff;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      margin-bottom: 0.6rem;
+    }
+
+    .route-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #888;
+      margin-bottom: 0.5rem;
+    }
+
+    .legs {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .pill .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      flex-shrink: 0;
+    }
+
+    .arrow {
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    .transfer-note {
+      font-size: 0.78rem;
+      color: #666;
+      margin-bottom: 0.75rem;
+    }
+
+    .transfer-note strong {
+      color: #333;
+    }
+
+    .timing {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .timing-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .timing-label {
+      font-size: 0.72rem;
+      color: #888;
+      font-weight: 500;
+      margin-bottom: 0.1rem;
+    }
+
+    .timing-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .timing-value.highlight {
+      color: #2563eb;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #efefef;
+      margin: 1.25rem 0;
+    }
+
+    .refresh-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .updated-at {
+      font-size: 0.78rem;
+      color: #aaa;
+    }
+
+    button {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.15s;
+    }
+
+    button:hover { background: #333; }
+    button:disabled { background: #ccc; cursor: default; }
+
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-msg {
+      background: #fff3f3;
+      border: 1.5px solid #fca5a5;
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      font-size: 0.85rem;
+      color: #b91c1c;
+      margin-bottom: 1rem;
+    }
+
+    .loading-msg {
+      text-align: center;
+      color: #aaa;
+      font-size: 0.9rem;
+      padding: 1.5rem 0;
+    }
+
+    #results { display: none; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <h1>Embarcadero → El Cerrito Plaza</h1>
+    <div class="subtitle">Real-time BART route recommendation</div>
+  </div>
+
+<div id="error-msg" class="error-msg" style="display:none"></div>
+  <div id="results"></div>
+
+  <hr class="divider">
+  <div class="refresh-row">
+    <span class="updated-at" id="updated-at"></span>
+    <button id="refresh-btn" onclick="loadRoutes()">
+      <span id="btn-icon">↻</span> Refresh
+    </button>
+  </div>
+</div>
+
+<script>
+// ── Line colors ────────────────────────────────────────────────────────────
+const LINE_COLORS = {
+  RED:    '#E31837',
+  YELLOW: '#FFD800',
+  ORANGE: '#F9A01B',
+  BLUE:   '#009BDE',
+  GREEN:  '#4EB748',
+  BERRYESSA: '#B51F82',
+};
+
+const LINE_TEXT = {
+  YELLOW: '#333',
+};
+
+function lineStyle(abbr) {
+  const key = abbr.toUpperCase();
+  const bg = LINE_COLORS[key] || '#888';
+  const color = LINE_TEXT[key] || '#fff';
+  return `background:${bg};color:${color}`;
+}
+
+// ── API key storage ────────────────────────────────────────────────────────
+const API_KEY = 'QXAJ-PUY3-9SKT-DWEI';
+
+function getKey() {
+  return API_KEY;
+}
+
+// ── Core logic ─────────────────────────────────────────────────────────────
+// Travel times from Embarcadero (minutes)
+const TRAVEL_EMBR_TO_19TH  = 13; // Embarcadero → 19th St Oakland
+const TRAVEL_EMBR_TO_LAKE  = 12; // Embarcadero → Lake Merritt
+const ORANGE_FROM_19TH     = 13; // 19th St Oakland → El Cerrito Plaza on Orange
+const ORANGE_FROM_LAKE     = 15; // Lake Merritt → El Cerrito Plaza on Orange
+const RED_TRAVEL           = 26; // Embarcadero → El Cerrito Plaza on Red (direct)
+
+const API_BASE = 'https://api.bart.gov/api/etd.aspx';
+
+async function fetchEtd(station) {
+  const url = `${API_BASE}?cmd=etd&orig=${station}&key=${API_KEY}&json=y`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  const msg = data?.root?.message;
+  if (msg?.error) throw new Error(msg.error.details || msg.error.text);
+  return data.root.station[0].etd;
+}
+
+// Parse departure minutes from an ETD list, filtered by destination abbr, color, and direction
+function parseMins(etdList, destAbbr, color, direction) {
+  const entry = etdList.find(e => e.abbreviation === destAbbr);
+  if (!entry) return [];
+  return entry.estimate
+    .filter(e => (!color || e.color === color) && (!direction || e.direction === direction))
+    .map(e => e.minutes === 'Leaving' ? 0 : parseInt(e.minutes, 10))
+    .filter(m => !isNaN(m))
+    .sort((a, b) => a - b);
+}
+
+// Parse all minutes matching a color (across all destinations), optionally filtered by direction
+function parseMinsAnyDest(etdList, color, direction) {
+  const results = [];
+  for (const entry of etdList) {
+    for (const e of entry.estimate) {
+      if (color && e.color !== color) continue;
+      if (direction && e.direction !== direction) continue;
+      const m = e.minutes === 'Leaving' ? 0 : parseInt(e.minutes, 10);
+      if (!isNaN(m)) results.push({ min: m, color: e.color });
+    }
+  }
+  return results.sort((a, b) => a.min - b.min);
+}
+
+async function computeRoutes() {
+  // Fetch all three stations in parallel
+  const [embrEtd, nth19Etd, lakeEtd] = await Promise.all([
+    fetchEtd('EMBR'),
+    fetchEtd('19TH'),
+    fetchEtd('LAKE'),
+  ]);
+
+  const routes = [];
+
+  // ── Route 1: Direct Red line (Embarcadero → El Cerrito Plaza) ─────────
+  // Red trains toward Richmond appear at EMBR
+  const redDepartures = parseMins(embrEtd, 'RICH', 'RED', 'North');
+  if (redDepartures.length > 0) {
+    const depart = redDepartures[0];
+    routes.push({
+      id: 'red-direct',
+      label: 'Direct',
+      legs: [{ line: 'RED', label: 'Red → Richmond' }],
+      transferStation: null,
+      departMinutes: depart,
+      waitMinutes: null,
+      arrivalMinutes: depart + RED_TRAVEL,
+    });
+  }
+
+  // ── Route 2: Yellow → Orange at 19th St Oakland ───────────────────────
+  // Yellow trains toward Antioch pass through 19th St
+  const yellowDepartures = parseMinsAnyDest(embrEtd, 'YELLOW', 'North');
+
+  // Orange trains toward Richmond at 19TH station (real ETD data)
+  const orangeAt19th = parseMins(nth19Etd, 'RICH', 'ORANGE', 'North');
+
+  if (yellowDepartures.length > 0 && orangeAt19th.length > 0) {
+    const yellowDepart = yellowDepartures[0].min;
+    const arriveAt19th = yellowDepart + TRAVEL_EMBR_TO_19TH;
+    // First Orange at 19th that hasn't left before we arrive
+    const connecting = orangeAt19th.find(m => m >= arriveAt19th);
+    if (connecting != null) {
+      const waitAt19th = connecting - arriveAt19th;
+      routes.push({
+        id: 'yellow-orange-19th',
+        label: 'Transfer at 19th St Oakland',
+        legs: [
+          { line: 'YELLOW', label: 'Yellow' },
+          { line: 'ORANGE', label: 'Orange → Richmond' },
+        ],
+        transferStation: '19th St Oakland',
+        departMinutes: yellowDepart,
+        waitMinutes: waitAt19th,
+        arrivalMinutes: connecting + ORANGE_FROM_19TH,
+      });
+    }
+  }
+
+  // ── Route 3: Blue/Green → Orange at Lake Merritt ──────────────────────
+  // Only northbound Blue/Green from EMBR pass through Lake Merritt
+  // (Daly City-bound trains go south and don't serve Lake Merritt toward Richmond)
+  const bgDepartures = parseMinsAnyDest(embrEtd, null, 'North')
+    .filter(e => e.color === 'BLUE' || e.color === 'GREEN');
+
+  // Orange trains toward Richmond at LAKE station (real ETD data)
+  const orangeAtLake = parseMins(lakeEtd, 'RICH', 'ORANGE', 'North');
+
+  if (bgDepartures.length > 0 && orangeAtLake.length > 0) {
+    const first = bgDepartures[0];
+    const arriveAtLake = first.min + TRAVEL_EMBR_TO_LAKE;
+    const connecting = orangeAtLake.find(m => m >= arriveAtLake);
+    if (connecting != null) {
+      const waitAtLake = connecting - arriveAtLake;
+      routes.push({
+        id: 'bg-orange-lake',
+        label: 'Transfer at Lake Merritt',
+        legs: [
+          { line: first.color, label: capitalize(first.color) },
+          { line: 'ORANGE', label: 'Orange → Richmond' },
+        ],
+        transferStation: 'Lake Merritt',
+        departMinutes: first.min,
+        waitMinutes: waitAtLake,
+        arrivalMinutes: connecting + ORANGE_FROM_LAKE,
+      });
+    }
+  }
+
+  // Sort: fastest arrival first; tie-break by soonest departure
+  routes.sort((a, b) => {
+    if (a.arrivalMinutes !== b.arrivalMinutes) return a.arrivalMinutes - b.arrivalMinutes;
+    return a.departMinutes - b.departMinutes;
+  });
+
+  return routes;
+}
+
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
+function formatMin(m) {
+  if (m === 0) return 'Now';
+  return `${m} min`;
+}
+
+function renderRoutes(routes) {
+  if (routes.length === 0) {
+    return '<div class="error-msg">No viable routes found right now. Try refreshing.</div>';
+  }
+
+  return routes.map((r, i) => {
+    const isBest = i === 0;
+    const legsHtml = r.legs.map(leg =>
+      `<span class="pill" style="${lineStyle(leg.line)}">
+        <span class="dot"></span>${leg.label}
+      </span>`
+    ).join('<span class="arrow">→</span>');
+
+    const transferHtml = r.transferStation
+      ? `<div class="transfer-note">Transfer at <strong>${r.transferStation}</strong>${r.waitMinutes != null ? ` · ~${r.waitMinutes} min wait` : ''}</div>`
+      : '<div class="transfer-note">No transfer needed</div>';
+
+    return `
+      <div class="route-card${isBest ? ' best' : ''}">
+        ${isBest ? '<span class="best-badge">Best Route</span>' : ''}
+        <div class="route-label">${r.label}</div>
+        <div class="legs">${legsHtml}</div>
+        ${transferHtml}
+        <div class="timing">
+          <div class="timing-item">
+            <span class="timing-label">Departs in</span>
+            <span class="timing-value${isBest ? ' highlight' : ''}">${formatMin(r.departMinutes)}</span>
+          </div>
+          <div class="timing-item">
+            <span class="timing-label">Est. arrival</span>
+            <span class="timing-value">~${r.arrivalMinutes} min</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── Refresh ────────────────────────────────────────────────────────────────
+async function loadRoutes() {
+  const apiKey = getKey();
+  const btn = document.getElementById('refresh-btn');
+  const icon = document.getElementById('btn-icon');
+  const errorEl = document.getElementById('error-msg');
+  const resultsEl = document.getElementById('results');
+
+  btn.disabled = true;
+  icon.outerHTML = '<span id="btn-icon" class="spinner"></span>';
+
+  errorEl.style.display = 'none';
+  resultsEl.innerHTML = '<div class="loading-msg">Loading…</div>';
+  resultsEl.style.display = 'block';
+
+  try {
+    const routes = await computeRoutes();
+    resultsEl.innerHTML = renderRoutes(routes);
+    resultsEl.style.display = 'block';
+    document.getElementById('updated-at').textContent =
+      'Updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  } catch (err) {
+    errorEl.textContent = `Error: ${err.message}`;
+    errorEl.style.display = 'block';
+  } finally {
+    document.getElementById('btn-icon').outerHTML = '<span id="btn-icon">↻</span>';
+    document.getElementById('refresh-btn').disabled = false;
+  }
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+loadRoutes();
+</script>
+</body>
+</html>
