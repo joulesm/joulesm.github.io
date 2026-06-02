@@ -307,92 +307,112 @@ function parseMinsAnyDest(etdList, color, direction) {
   return results.sort((a, b) => a.min - b.min);
 }
 
+// Find the PLZA train that best matches a connecting train from an intermediate station.
+// connectingMin = when the train departs the intermediate station (minutes from now)
+// estimatedTravel = our estimate of intermediate station → PLZA travel time
+// Returns the PLZA ETD minute for that train, or null.
+function matchPlza(plzaMins, connectingMin, estimatedTravel) {
+  const target = connectingMin + estimatedTravel;
+  // Only consider PLZA trains that depart after the connecting train left the intermediate station
+  const candidates = plzaMins.filter(m => m >= connectingMin);
+  if (candidates.length === 0) return null;
+  // Pick the candidate closest to our estimated arrival time
+  return candidates.reduce((best, m) =>
+    Math.abs(m - target) < Math.abs(best - target) ? m : best
+  );
+}
+
 async function computeRoutes() {
-  // Fetch all three stations in parallel
-  const [embrEtd, nth19Etd, lakeEtd] = await Promise.all([
+  // Fetch all four stations in parallel
+  const [embrEtd, nth19Etd, lakeEtd, plzaEtd] = await Promise.all([
     fetchEtd('EMBR'),
     fetchEtd('19TH'),
     fetchEtd('LAKE'),
+    fetchEtd('PLZA'),
   ]);
 
   const routes = [];
 
+  // PLZA departure times for Orange and Red trains toward Richmond
+  const plzaOrange = parseMins(plzaEtd, 'RICH', 'ORANGE', 'North');
+  const plzaRed    = parseMins(plzaEtd, 'RICH', 'RED',    'North');
+
   // ── Route 1: Direct Red line (Embarcadero → El Cerrito Plaza) ─────────
-  // Red trains toward Richmond appear at EMBR
   const redDepartures = parseMins(embrEtd, 'RICH', 'RED', 'North');
-  if (redDepartures.length > 0) {
+  if (redDepartures.length > 0 && plzaRed.length > 0) {
     const depart = redDepartures[0];
-    routes.push({
-      id: 'red-direct',
-      label: 'Direct',
-      legs: [{ line: 'RED', label: 'Red → Richmond' }],
-      transferStation: null,
-      departMinutes: depart,
-      waitMinutes: null,
-      arrivalMinutes: depart + RED_TRAVEL,
-    });
+    const arrivalAtPlza = matchPlza(plzaRed, depart, RED_TRAVEL);
+    if (arrivalAtPlza != null) {
+      routes.push({
+        id: 'red-direct',
+        label: 'Direct',
+        legs: [{ line: 'RED', label: 'Red → Richmond' }],
+        transferStation: null,
+        departMinutes: depart,
+        waitMinutes: null,
+        arrivalMinutes: arrivalAtPlza,
+      });
+    }
   }
 
   // ── Route 2: Yellow → Orange at 19th St Oakland ───────────────────────
-  // Yellow trains toward Antioch pass through 19th St
   const yellowDepartures = parseMinsAnyDest(embrEtd, 'YELLOW', 'North');
+  const orangeAt19th     = parseMins(nth19Etd, 'RICH', 'ORANGE', 'North');
 
-  // Orange trains toward Richmond at 19TH station (real ETD data)
-  const orangeAt19th = parseMins(nth19Etd, 'RICH', 'ORANGE', 'North');
-
-  if (yellowDepartures.length > 0 && orangeAt19th.length > 0) {
-    const yellowDepart = yellowDepartures[0].min;
-    const arriveAt19th = yellowDepart + TRAVEL_EMBR_TO_19TH;
-    // First Orange at 19th that hasn't left before we arrive
-    const connecting = orangeAt19th.find(m => m >= arriveAt19th);
+  if (yellowDepartures.length > 0 && orangeAt19th.length > 0 && plzaOrange.length > 0) {
+    const yellowDepart  = yellowDepartures[0].min;
+    const arriveAt19th  = yellowDepart + TRAVEL_EMBR_TO_19TH;
+    const connecting    = orangeAt19th.find(m => m >= arriveAt19th);
     if (connecting != null) {
-      const waitAt19th = connecting - arriveAt19th;
-      routes.push({
-        id: 'yellow-orange-19th',
-        label: 'Transfer at 19th St Oakland',
-        legs: [
-          { line: 'YELLOW', label: 'Yellow' },
-          { line: 'ORANGE', label: 'Orange → Richmond' },
-        ],
-        transferStation: '19th St Oakland',
-        departMinutes: yellowDepart,
-        waitMinutes: waitAt19th,
-        arrivalMinutes: connecting + ORANGE_FROM_19TH,
-      });
+      const waitAt19th    = connecting - arriveAt19th;
+      const arrivalAtPlza = matchPlza(plzaOrange, connecting, ORANGE_FROM_19TH);
+      if (arrivalAtPlza != null) {
+        routes.push({
+          id: 'yellow-orange-19th',
+          label: 'Transfer at 19th St Oakland',
+          legs: [
+            { line: 'YELLOW', label: 'Yellow' },
+            { line: 'ORANGE', label: 'Orange → Richmond' },
+          ],
+          transferStation: '19th St Oakland',
+          departMinutes: yellowDepart,
+          waitMinutes: waitAt19th,
+          arrivalMinutes: arrivalAtPlza,
+        });
+      }
     }
   }
 
   // ── Route 3: Blue/Green → Orange at Lake Merritt ──────────────────────
-  // Only northbound Blue/Green from EMBR pass through Lake Merritt
-  // (Daly City-bound trains go south and don't serve Lake Merritt toward Richmond)
   const bgDepartures = parseMinsAnyDest(embrEtd, null, 'North')
     .filter(e => e.color === 'BLUE' || e.color === 'GREEN');
-
-  // Orange trains toward Richmond at LAKE station (real ETD data)
   const orangeAtLake = parseMins(lakeEtd, 'RICH', 'ORANGE', 'North');
 
-  if (bgDepartures.length > 0 && orangeAtLake.length > 0) {
-    const first = bgDepartures[0];
-    const arriveAtLake = first.min + TRAVEL_EMBR_TO_LAKE;
-    const connecting = orangeAtLake.find(m => m >= arriveAtLake);
+  if (bgDepartures.length > 0 && orangeAtLake.length > 0 && plzaOrange.length > 0) {
+    const first         = bgDepartures[0];
+    const arriveAtLake  = first.min + TRAVEL_EMBR_TO_LAKE;
+    const connecting    = orangeAtLake.find(m => m >= arriveAtLake);
     if (connecting != null) {
-      const waitAtLake = connecting - arriveAtLake;
-      routes.push({
-        id: 'bg-orange-lake',
-        label: 'Transfer at Lake Merritt',
-        legs: [
-          { line: first.color, label: capitalize(first.color) },
-          { line: 'ORANGE', label: 'Orange → Richmond' },
-        ],
-        transferStation: 'Lake Merritt',
-        departMinutes: first.min,
-        waitMinutes: waitAtLake,
-        arrivalMinutes: connecting + ORANGE_FROM_LAKE,
-      });
+      const waitAtLake    = connecting - arriveAtLake;
+      const arrivalAtPlza = matchPlza(plzaOrange, connecting, ORANGE_FROM_LAKE);
+      if (arrivalAtPlza != null) {
+        routes.push({
+          id: 'bg-orange-lake',
+          label: 'Transfer at Lake Merritt',
+          legs: [
+            { line: first.color, label: capitalize(first.color) },
+            { line: 'ORANGE', label: 'Orange → Richmond' },
+          ],
+          transferStation: 'Lake Merritt',
+          departMinutes: first.min,
+          waitMinutes: waitAtLake,
+          arrivalMinutes: arrivalAtPlza,
+        });
+      }
     }
   }
 
-  // Sort: fastest arrival first; tie-break by soonest departure
+  // Sort: earliest arrival first; tie-break by soonest departure
   routes.sort((a, b) => {
     if (a.arrivalMinutes !== b.arrivalMinutes) return a.arrivalMinutes - b.arrivalMinutes;
     return a.departMinutes - b.departMinutes;
@@ -408,6 +428,11 @@ function capitalize(s) {
 function formatMin(m) {
   if (m === 0) return 'Now';
   return `${m} min`;
+}
+
+function formatArrival(minutesFromNow) {
+  const d = new Date(Date.now() + minutesFromNow * 60000);
+  return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 }
 
 function renderRoutes(routes) {
@@ -440,7 +465,7 @@ function renderRoutes(routes) {
           </div>
           <div class="timing-item">
             <span class="timing-label">Est. arrival</span>
-            <span class="timing-value">~${r.arrivalMinutes} min</span>
+            <span class="timing-value">${formatArrival(r.arrivalMinutes)}</span>
           </div>
         </div>
       </div>`;
